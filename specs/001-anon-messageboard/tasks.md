@@ -41,44 +41,44 @@
 
 ### 資料模型
 
-- [ ] T005 建立 `MessageStatus` 列舉在 `NoticeBoard/Models/MessageStatus.cs`
-- [ ] T006 建立 `Message` 實體模型在 `NoticeBoard/Models/Message.cs`
-- [ ] T007 建立 `LikeRecord` 實體模型在 `NoticeBoard/Models/LikeRecord.cs`
+- [X] T005 建立 `MessageStatus` 列舉在 `NoticeBoard/Models/MessageStatus.cs`
+- [X] T006 建立 `Message` 實體模型在 `NoticeBoard/Models/Message.cs`
+- [X] T007 建立 `LikeRecord` 實體模型在 `NoticeBoard/Models/LikeRecord.cs`
 
 ### 視圖模型
 
-- [ ] T008 建立 `MessageViewModel` 在 `NoticeBoard/Models/ViewModels/MessageViewModel.cs`
-- [ ] T009 建立 `AdminMessageViewModel` 在 `NoticeBoard/Models/ViewModels/AdminMessageViewModel.cs`
+- [X] T008 建立 `MessageViewModel` 在 `NoticeBoard/Models/ViewModels/MessageViewModel.cs`
+- [X] T009 建立 `AdminMessageViewModel` 在 `NoticeBoard/Models/ViewModels/AdminMessageViewModel.cs`
 
 ### 請求模型
 
-- [ ] T010 建立 `CreateMessageRequest` 在 `NoticeBoard/Models/Requests/CreateMessageRequest.cs`
-- [ ] T011 建立 `LikeRequest` 在 `NoticeBoard/Models/Requests/LikeRequest.cs`
-- [ ] T012 建立 `AdminLoginRequest` 在 `NoticeBoard/Models/Requests/AdminLoginRequest.cs`
+- [X] T010 建立 `CreateMessageRequest` 在 `NoticeBoard/Models/Requests/CreateMessageRequest.cs`
+- [X] T011 建立 `LikeRequest` 在 `NoticeBoard/Models/Requests/LikeRequest.cs`
+- [X] T012 建立 `AdminLoginRequest` 在 `NoticeBoard/Models/Requests/AdminLoginRequest.cs`
 
 ### JSON 儲存服務（核心基礎設施）
 
-- [ ] T013 建立 `IJsonStorageService<T>` 介面在 `NoticeBoard/Services/IJsonStorageService.cs`
-- [ ] T014 實作 `JsonStorageService<T>` 在 `NoticeBoard/Services/JsonStorageService.cs`（原子寫入 + mutex）
+- [X] T013 建立 `IJsonStorageService<T>` 介面在 `NoticeBoard/Services/IJsonStorageService.cs`
+- [X] T014 實作 `JsonStorageService<T>` 在 `NoticeBoard/Services/JsonStorageService.cs`（原子寫入 + mutex）
 
 ### 留言服務（核心基礎設施）
 
-- [ ] T015 建立 `IMessageService` 介面在 `NoticeBoard/Services/IMessageService.cs`
-- [ ] T016 實作 `MessageService` 在 `NoticeBoard/Services/MessageService.cs`
+- [X] T015 建立 `IMessageService` 介面在 `NoticeBoard/Services/IMessageService.cs`
+- [X] T016 實作 `MessageService` 在 `NoticeBoard/Services/MessageService.cs`
 
 ### 按讚服務（核心基礎設施）
 
-- [ ] T017 建立 `ILikeService` 介面在 `NoticeBoard/Services/ILikeService.cs`
-- [ ] T018 實作 `LikeService` 在 `NoticeBoard/Services/LikeService.cs`
+- [X] T017 建立 `ILikeService` 介面在 `NoticeBoard/Services/ILikeService.cs`
+- [X] T018 實作 `LikeService` 在 `NoticeBoard/Services/LikeService.cs`
 
 ### SignalR Hub（即時通訊基礎設施）
 
-- [ ] T019 建立 `IMessageClient` 介面在 `NoticeBoard/Hubs/IMessageClient.cs`
-- [ ] T020 實作 `MessageHub` 在 `NoticeBoard/Hubs/MessageHub.cs`
+- [X] T019 建立 `IMessageClient` 介面在 `NoticeBoard/Hubs/IMessageClient.cs`
+- [X] T020 實作 `MessageHub` 在 `NoticeBoard/Hubs/MessageHub.cs`
 
 ### 程式進入點配置
 
-- [ ] T021 更新 `NoticeBoard/Program.cs` 配置 DI、Session、SignalR、Serilog、CSP Header
+- [X] T021 更新 `NoticeBoard/Program.cs` 配置 DI、Session、SignalR、Serilog、CSP Header
 
 **Checkpoint**: 基礎設施就緒 - User Story 實作可以開始
 
