@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticeBoard", "NoticeBoard\NoticeBoard.csproj", "{898D3548-6C91-4AEF-BF1B-28335775A2AA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0433F31D-70EB-4387-8090-3F29D6524EA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticeBoard.Tests", "tests\NoticeBoard.Tests\NoticeBoard.Tests.csproj", "{0A8C65EF-56B6-4213-8ED0-5345C18A9312}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,12 @@ Global
 		{898D3548-6C91-4AEF-BF1B-28335775A2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{898D3548-6C91-4AEF-BF1B-28335775A2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{898D3548-6C91-4AEF-BF1B-28335775A2AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A8C65EF-56B6-4213-8ED0-5345C18A9312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A8C65EF-56B6-4213-8ED0-5345C18A9312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A8C65EF-56B6-4213-8ED0-5345C18A9312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A8C65EF-56B6-4213-8ED0-5345C18A9312}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0A8C65EF-56B6-4213-8ED0-5345C18A9312} = {0433F31D-70EB-4387-8090-3F29D6524EA7}
 	EndGlobalSection
 EndGlobal

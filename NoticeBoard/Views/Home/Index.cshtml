@@ -1,8 +1,119 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "匿名留言板";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="noticeboard-container">
+    <!-- 標題區域 -->
+    <header class="noticeboard-header text-center mb-4">
+        <h1 class="display-5">📝 匿名留言板</h1>
+        <p class="lead text-muted">自由發表您的想法，無需登入！</p>
+    </header>
+
+    <!-- 留言表單區域 -->
+    <section class="message-form-section mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form id="messageForm" novalidate>
+                    <div class="mb-3">
+                        <label for="nicknameInput" class="form-label">暱稱（選填）</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="nicknameInput" 
+                               name="nickname"
+                               maxlength="50" 
+                               placeholder="留空則顯示為「匿名」">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contentInput" class="form-label">留言內容 <span class="text-danger">*</span></label>
+                        <textarea class="form-control" 
+                                  id="contentInput" 
+                                  name="content"
+                                  rows="3" 
+                                  maxlength="300" 
+                                  placeholder="分享您的想法...（1-300 字）"
+                                  required></textarea>
+                        <div class="form-text">
+                            <span id="charCount">0</span>/300 字
+                        </div>
+                        <div class="invalid-feedback" id="contentError">
+                            留言內容為必填，且須為 1-300 字
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span class="submit-text">送出留言</span>
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 連線狀態指示器 -->
+    <div class="connection-status mb-3">
+        <span id="connectionIndicator" class="badge bg-warning">
+            <span class="status-dot"></span>
+            ⏳ 連線中...
+        </span>
+    </div>
+
+    <!-- 留言列表區域 -->
+    <section class="messages-section">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">最新留言</h2>
+            <button class="btn btn-outline-secondary btn-sm" id="refreshBtn" title="重新整理">
+                🔄 重新整理
+            </button>
+        </div>
+        
+        <!-- 載入中指示器 -->
+        <div id="loadingIndicator" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">載入中...</span>
+            </div>
+            <p class="mt-2 text-muted">載入留言中...</p>
+        </div>
+
+        <!-- 無留言提示 -->
+        <div id="emptyMessage" class="text-center py-5 d-none">
+            <div class="empty-state">
+                <span class="empty-icon">💬</span>
+                <p class="text-muted mt-2">目前還沒有留言，成為第一個發言的人吧！</p>
+            </div>
+        </div>
+
+        <!-- 留言列表 -->
+        <div id="messagesList" class="messages-list"></div>
+    </section>
 </div>
+
+<!-- 留言卡片範本 -->
+<template id="messageTemplate">
+    <article class="message-card card mb-3 shadow-sm" data-message-id="">
+        <div class="card-body">
+            <div class="message-header d-flex justify-content-between align-items-start mb-2">
+                <div class="message-author">
+                    <strong class="display-name"></strong>
+                </div>
+                <small class="message-time text-muted"></small>
+            </div>
+            <div class="message-content">
+                <p class="card-text mb-2"></p>
+            </div>
+            <div class="message-footer d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-danger btn-sm like-btn" title="按讚">
+                    <span class="like-icon">🤍</span>
+                    <span class="like-count">0</span>
+                </button>
+            </div>
+        </div>
+    </article>
+</template>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js" 
+            integrity="sha512-7rhBJh2oYALvGEvTnrfKDLPEDJSK8qHVQm6J0pQoYUz+BNMqO1JZkdMrNLAkh+SI0+Ufmz1FNy2fN/lYaXQxPg==" 
+            crossorigin="anonymous" 
+            referrerpolicy="no-referrer"></script>
+}

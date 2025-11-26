@@ -1,0 +1,63 @@
+@model NoticeBoard.Models.Requests.AdminLoginRequest
+@{
+    ViewData["Title"] = "管理者登入";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NoticeBoard</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="bi bi-shield-lock login-icon"></i>
+                <h1 class="login-title">管理者登入</h1>
+                <p class="login-subtitle">NoticeBoard 後台管理系統</p>
+            </div>
+
+            <form asp-action="Login" method="post" class="login-form">
+                @if (ViewData["ReturnUrl"] is not null)
+                {
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                }
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Username" class="form-control" id="username" placeholder="使用者名稱" autofocus />
+                    <label for="username"><i class="bi bi-person"></i> 使用者名稱</label>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Password" class="form-control" id="password" placeholder="密碼" type="password" />
+                    <label for="password"><i class="bi bi-key"></i> 密碼</label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 login-btn">
+                    <i class="bi bi-box-arrow-in-right"></i> 登入
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a asp-controller="Home" asp-action="Index" class="back-link">
+                    <i class="bi bi-arrow-left"></i> 返回首頁
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

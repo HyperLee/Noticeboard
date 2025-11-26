@@ -1,0 +1,187 @@
+@model List<NoticeBoard.Models.ViewModels.AdminMessageViewModel>
+@{
+    ViewData["Title"] = "後台管理";
+}
+
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+<div class="admin-container">
+    <div class="admin-header d-flex justify-content-between align-items-center mb-4">
+        <h1 class="admin-title">
+            <i class="bi bi-gear"></i> 留言管理後台
+        </h1>
+        <div class="admin-actions">
+            <button type="button" class="btn btn-outline-warning me-2" id="cleanupBtn">
+                <i class="bi bi-trash"></i> 清理過期資料
+            </button>
+            <form asp-action="Logout" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-box-arrow-right"></i> 登出
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 統計資訊 -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card bg-primary text-white">
+                <div class="stat-icon"><i class="bi bi-chat-dots"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalCount">@Model.Count</div>
+                    <div class="stat-label">總留言數</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-success text-white">
+                <div class="stat-icon"><i class="bi bi-eye"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value" id="publicCount">@Model.Count(m => m.Status == NoticeBoard.Models.MessageStatus.Public)</div>
+                    <div class="stat-label">公開留言</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-warning text-dark">
+                <div class="stat-icon"><i class="bi bi-eye-slash"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value" id="hiddenCount">@Model.Count(m => m.Status == NoticeBoard.Models.MessageStatus.Hidden)</div>
+                    <div class="stat-label">隱藏留言</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-danger text-white">
+                <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value" id="deletedCount">@Model.Count(m => m.Status == NoticeBoard.Models.MessageStatus.Deleted)</div>
+                    <div class="stat-label">已刪除</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 篩選器 -->
+    <div class="filter-bar mb-3">
+        <div class="btn-group" role="group" aria-label="狀態篩選">
+            <button type="button" class="btn btn-outline-secondary filter-btn active" data-status="all">全部</button>
+            <button type="button" class="btn btn-outline-success filter-btn" data-status="Public">公開</button>
+            <button type="button" class="btn btn-outline-warning filter-btn" data-status="Hidden">隱藏</button>
+            <button type="button" class="btn btn-outline-danger filter-btn" data-status="Deleted">已刪除</button>
+        </div>
+    </div>
+
+    <!-- 留言列表 -->
+    <div class="message-list" id="messageList">
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>目前沒有任何留言</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var message in Model)
+            {
+                <div class="message-card @GetStatusClass(message.Status)" data-id="@message.Id" data-status="@message.Status">
+                    <div class="message-header">
+                        <span class="message-author">@message.DisplayName</span>
+                        <span class="message-status badge @GetStatusBadgeClass(message.Status)">@message.StatusText</span>
+                        <span class="message-time">@message.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    </div>
+                    <div class="message-content">@message.Content</div>
+                    <div class="message-footer">
+                        <span class="message-likes">
+                            <i class="bi bi-heart-fill text-danger"></i> @message.LikeCount
+                        </span>
+                        <div class="message-actions">
+                            @if (message.CanHide)
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-warning action-btn" 
+                                        data-action="hide" data-id="@message.Id" title="隱藏">
+                                    <i class="bi bi-eye-slash"></i> 隱藏
+                                </button>
+                            }
+                            @if (message.CanRestore)
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-success action-btn" 
+                                        data-action="restore" data-id="@message.Id" title="恢復">
+                                    <i class="bi bi-eye"></i> 恢復
+                                </button>
+                            }
+                            @if (message.CanDelete)
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-danger action-btn" 
+                                        data-action="delete" data-id="@message.Id" title="刪除">
+                                    <i class="bi bi-trash"></i> 刪除
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Toast 通知 -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="adminToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">通知</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastBody"></div>
+    </div>
+</div>
+
+<!-- 確認對話框 -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalTitle">確認操作</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="confirmModalBody">
+                確定要執行此操作嗎？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmModalBtn">確認</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+}
+
+@functions {
+    private string GetStatusClass(NoticeBoard.Models.MessageStatus status)
+    {
+        return status switch
+        {
+            NoticeBoard.Models.MessageStatus.Public => "status-public",
+            NoticeBoard.Models.MessageStatus.Hidden => "status-hidden",
+            NoticeBoard.Models.MessageStatus.Deleted => "status-deleted",
+            _ => ""
+        };
+    }
+
+    private string GetStatusBadgeClass(NoticeBoard.Models.MessageStatus status)
+    {
+        return status switch
+        {
+            NoticeBoard.Models.MessageStatus.Public => "bg-success",
+            NoticeBoard.Models.MessageStatus.Hidden => "bg-warning text-dark",
+            NoticeBoard.Models.MessageStatus.Deleted => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
