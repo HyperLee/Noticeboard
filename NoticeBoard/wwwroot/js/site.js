@@ -46,9 +46,13 @@ const NoticeBoard = (function () {
      * 初始化 SignalR 連線
      */
     async function initSignalR() {
+        // 先更新狀態為連線中
+        updateConnectionStatus('reconnecting');
+        
         if (typeof signalR === 'undefined') {
             console.warn('SignalR 函式庫尚未載入');
             showToast('即時更新功能不可用', 'warning');
+            updateConnectionStatus('disconnected');
             return;
         }
 
@@ -142,9 +146,9 @@ const NoticeBoard = (function () {
         if (!elements.connectionIndicator) return;
 
         const statusConfig = {
-            connected: { class: 'bg-success', text: '已連線', clickable: false },
-            reconnecting: { class: 'bg-warning', text: '重新連線中...', clickable: false },
-            disconnected: { class: 'bg-danger', text: '已斷線 - 點擊重連', clickable: true }
+            connected: { class: 'bg-success', text: '✓ 已連線', clickable: false },
+            reconnecting: { class: 'bg-warning', text: '⏳ 連線中...', clickable: false },
+            disconnected: { class: 'bg-danger', text: '✗ 已斷線 - 點擊重連', clickable: true }
         };
 
         const config = statusConfig[status] || statusConfig.disconnected;
@@ -498,13 +502,24 @@ const NoticeBoard = (function () {
                 throw new Error(errorData?.detail || `HTTP ${response.status}`);
             }
 
+            // 取得新建立的留言資料
+            const newMessage = await response.json();
+
             // 成功送出，清空表單
             elements.contentInput.value = '';
             elements.nicknameInput.value = '';
             updateCharCount();
 
-            // 留言會透過 SignalR 自動新增，不需手動插入
-            console.log('留言送出成功');
+            // 手動新增留言到列表（確保使用者立即看到）
+            // 檢查是否已存在（可能 SignalR 已經推送過）
+            if (!document.querySelector(`[data-message-id="${newMessage.id}"]`)) {
+                prependMessage(newMessage);
+                updateEmptyState();
+            }
+
+            // 顯示成功訊息
+            showToast('留言送出成功！', 'success', false, 2000);
+            console.log('留言送出成功:', newMessage.id);
 
         } catch (err) {
             console.error('送出留言失敗:', err);
