@@ -178,15 +178,15 @@
 
 **Purpose**: 跨 User Story 的改進與清理任務
 
-- [ ] T059 實作 `CleanupService` 背景服務在 `NoticeBoard/Services/CleanupService.cs`（24 小時自動清理）
-- [ ] T060 更新 `NoticeBoard/Program.cs` 註冊 CleanupService 為 HostedService
-- [ ] T061 建立空白 JSON 檔案 `NoticeBoard/Data/messages.json` 與 `NoticeBoard/Data/likes.json`
-- [ ] T062 更新 `NoticeBoard/Views/Shared/_Layout.cshtml` 加入 SignalR client script 引用
-- [ ] T063 實作輸入驗證、XSS 過濾與黑名單詞彙過濾邏輯在 `MessageService.SanitizeContent()`（黑名單詞彙列表定義於 appsettings.json）
-- [ ] T064 實作簡易 Rate Limiting 中介軟體在 `NoticeBoard/Middleware/RateLimitingMiddleware.cs`
-- [ ] T065 更新 `NoticeBoard/Program.cs` 配置 RFC 7807 Problem Details
-- [ ] T066 程式碼清理與 XML 文件註解完善
-- [ ] T067 執行 `quickstart.md` 驗證流程確認功能正常運作
+- [X] T059 實作 `CleanupService` 背景服務在 `NoticeBoard/Services/CleanupService.cs`（24 小時自動清理）
+- [X] T060 更新 `NoticeBoard/Program.cs` 註冊 CleanupService 為 HostedService
+- [X] T061 建立空白 JSON 檔案 `NoticeBoard/Data/messages.json` 與 `NoticeBoard/Data/likes.json`
+- [X] T062 更新 `NoticeBoard/Views/Shared/_Layout.cshtml` 加入 SignalR client script 引用
+- [X] T063 實作輸入驗證、XSS 過濾與黑名單詞彙過濾邏輯在 `MessageService.SanitizeContent()`（黑名單詞彙列表定義於 appsettings.json）
+- [X] T064 實作簡易 Rate Limiting 中介軟體在 `NoticeBoard/Middleware/RateLimitingMiddleware.cs`
+- [X] T065 更新 `NoticeBoard/Program.cs` 配置 RFC 7807 Problem Details
+- [X] T066 程式碼清理與 XML 文件註解完善
+- [X] T067 執行 `quickstart.md` 驗證流程確認功能正常運作
 
 ---
 

@@ -177,8 +177,8 @@ public partial class MessageService : IMessageService
         // 移除多餘空白
         sanitized = WhitespaceRegex().Replace(sanitized, " ");
 
-        // 黑名單詞彙過濾
-        var blacklist = _configuration.GetSection("Blacklist:Words").Get<string[]>() ?? [];
+        // 黑名單詞彙過濾（從 ContentModeration:BlacklistedWords 讀取）
+        var blacklist = _configuration.GetSection("ContentModeration:BlacklistedWords").Get<string[]>() ?? [];
         foreach (var word in blacklist)
         {
             if (!string.IsNullOrWhiteSpace(word))
