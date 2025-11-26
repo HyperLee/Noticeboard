@@ -26,10 +26,10 @@
 
 **Purpose**: 專案基礎設定與相依套件配置
 
-- [ ] T001 更新 `NoticeBoard/NoticeBoard.csproj` 加入 SignalR、Serilog 相依套件
-- [ ] T002 配置 `NoticeBoard/appsettings.json` 加入 Storage、Cleanup、Admin 設定區塊
-- [ ] T003 配置 `NoticeBoard/appsettings.Development.json` 開發環境設定
-- [ ] T004 建立資料夾結構 `NoticeBoard/Models/Requests/`、`NoticeBoard/Models/ViewModels/`
+- [X] T001 更新 `NoticeBoard/NoticeBoard.csproj` 加入 SignalR、Serilog 相依套件
+- [X] T002 配置 `NoticeBoard/appsettings.json` 加入 Storage、Cleanup、Admin 設定區塊
+- [X] T003 配置 `NoticeBoard/appsettings.Development.json` 開發環境設定
+- [X] T004 建立資料夾結構 `NoticeBoard/Models/Requests/`、`NoticeBoard/Models/ViewModels/`
 
 ---
 
