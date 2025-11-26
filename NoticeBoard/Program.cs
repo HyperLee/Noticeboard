@@ -1,4 +1,5 @@
 using NoticeBoard.Hubs;
+using NoticeBoard.Middleware;
 using NoticeBoard.Models;
 using NoticeBoard.Services;
 using Serilog;
@@ -89,6 +90,9 @@ public class Program
 
             // 啟用 Session
             app.UseSession();
+
+            // 管理者授權中介軟體（檢查 /Admin/* MVC 路由）
+            app.UseAdminAuthorization();
 
             app.UseAuthorization();
 

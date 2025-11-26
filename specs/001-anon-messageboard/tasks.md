@@ -152,23 +152,23 @@
 
 ### Implementation for User Story 4
 
-- [ ] T042 [US4] 建立 `LoginResponse` 在 `NoticeBoard/Models/Responses/LoginResponse.cs`
-- [ ] T043 [US4] 建立 `CleanupResponse` 在 `NoticeBoard/Models/Responses/CleanupResponse.cs`
-- [ ] T044 [US4] 建立 `AdminController` 在 `NoticeBoard/Controllers/Api/AdminController.cs`
-- [ ] T045 [US4] 實作 `POST /api/admin/login` 端點（Session 認證）
-- [ ] T046 [US4] 實作 `POST /api/admin/logout` 端點
-- [ ] T047 [US4] 實作 `GET /api/admin/messages` 端點（取得所有留言含隱藏）
-- [ ] T048 [US4] 實作 `POST /api/admin/messages/{id}/hide` 端點
-- [ ] T049 [US4] 實作 `POST /api/admin/messages/{id}/restore` 端點
-- [ ] T050 [US4] 實作 `DELETE /api/admin/messages/{id}` 端點
-- [ ] T051 [US4] 實作 `POST /api/admin/cleanup` 端點（手動清理）
-- [ ] T052 [US4] 建立 `AdminAuthorizationMiddleware` 在 `NoticeBoard/Middleware/AdminAuthorizationMiddleware.cs`
-- [ ] T053 [US4] 建立後台 MVC Controller 在 `NoticeBoard/Controllers/AdminController.cs`
-- [ ] T054 [US4] 建立後台視圖在 `NoticeBoard/Views/Admin/Index.cshtml`
-- [ ] T055 [US4] 建立後台登入視圖在 `NoticeBoard/Views/Admin/Login.cshtml`
-- [ ] T056 [US4] 建立後台 JavaScript 在 `NoticeBoard/wwwroot/js/admin.js`
-- [ ] T057 [US4] 建立後台 CSS 在 `NoticeBoard/wwwroot/css/admin.css`
-- [ ] T058 [US4] 更新 `NoticeBoard/Program.cs` 註冊 AdminAuthorizationMiddleware
+- [X] T042 [US4] 建立 `LoginResponse` 在 `NoticeBoard/Models/Responses/LoginResponse.cs`
+- [X] T043 [US4] 建立 `CleanupResponse` 在 `NoticeBoard/Models/Responses/CleanupResponse.cs`
+- [X] T044 [US4] 建立 `AdminController` 在 `NoticeBoard/Controllers/Api/AdminController.cs`
+- [X] T045 [US4] 實作 `POST /api/admin/login` 端點（Session 認證）
+- [X] T046 [US4] 實作 `POST /api/admin/logout` 端點
+- [X] T047 [US4] 實作 `GET /api/admin/messages` 端點（取得所有留言含隱藏）
+- [X] T048 [US4] 實作 `POST /api/admin/messages/{id}/hide` 端點
+- [X] T049 [US4] 實作 `POST /api/admin/messages/{id}/restore` 端點
+- [X] T050 [US4] 實作 `DELETE /api/admin/messages/{id}` 端點
+- [X] T051 [US4] 實作 `POST /api/admin/cleanup` 端點（手動清理）
+- [X] T052 [US4] 建立 `AdminAuthorizationMiddleware` 在 `NoticeBoard/Middleware/AdminAuthorizationMiddleware.cs`
+- [X] T053 [US4] 建立後台 MVC Controller 在 `NoticeBoard/Controllers/AdminController.cs`
+- [X] T054 [US4] 建立後台視圖在 `NoticeBoard/Views/Admin/Index.cshtml`
+- [X] T055 [US4] 建立後台登入視圖在 `NoticeBoard/Views/Admin/Login.cshtml`
+- [X] T056 [US4] 建立後台 JavaScript 在 `NoticeBoard/wwwroot/js/admin.js`
+- [X] T057 [US4] 建立後台 CSS 在 `NoticeBoard/wwwroot/css/admin.css`
+- [X] T058 [US4] 更新 `NoticeBoard/Program.cs` 註冊 AdminAuthorizationMiddleware
 
 **Checkpoint**: 管理者後台功能完整可用，可獨立測試
 
