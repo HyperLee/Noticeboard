@@ -82,7 +82,7 @@ NoticeBoard/
 │   ├── MessageStatus.cs           # 留言狀態列舉
 │   └── ViewModels/
 │       ├── MessageViewModel.cs    # 前台留言展示
-│       └── AdminViewModel.cs      # 後台管理展示
+│       └── AdminMessageViewModel.cs  # 後台管理展示
 ├── Services/
 │   ├── IMessageService.cs         # 留言服務介面
 │   ├── MessageService.cs          # 留言服務實作

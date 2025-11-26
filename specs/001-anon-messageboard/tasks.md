@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/001-anon-messageboard/`  
 **Prerequisites**: plan.md ✅, spec.md ✅, research.md ✅, data-model.md ✅, contracts/ ✅, quickstart.md ✅
 
-**Tests**: 未明確要求測試任務，本任務清單專注於實作任務。
+**Tests**: 依憲章「測試優先開發」原則，測試程式碼應隨各實作任務一併完成（紅-綠-重構週期）。測試檔案位於 `tests/NoticeBoard.Tests/`，包含單元測試與整合測試。
 
 **Organization**: 任務依 User Story 分組，每個 Story 可獨立實作與測試。
 
@@ -181,7 +181,7 @@
 - [ ] T060 更新 `NoticeBoard/Program.cs` 註冊 CleanupService 為 HostedService
 - [ ] T061 建立空白 JSON 檔案 `NoticeBoard/Data/messages.json` 與 `NoticeBoard/Data/likes.json`
 - [ ] T062 更新 `NoticeBoard/Views/Shared/_Layout.cshtml` 加入 SignalR client script 引用
-- [ ] T063 實作輸入驗證與 XSS 過濾邏輯在 `MessageService.SanitizeContent()`
+- [ ] T063 實作輸入驗證、XSS 過濾與黑名單詞彙過濾邏輯在 `MessageService.SanitizeContent()`（黑名單詞彙列表定義於 appsettings.json）
 - [ ] T064 實作簡易 Rate Limiting 中介軟體在 `NoticeBoard/Middleware/RateLimitingMiddleware.cs`
 - [ ] T065 更新 `NoticeBoard/Program.cs` 配置 RFC 7807 Problem Details
 - [ ] T066 程式碼清理與 XML 文件註解完善
