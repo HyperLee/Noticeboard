@@ -92,13 +92,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T022 [US1] 建立 `MessagesController` 在 `NoticeBoard/Controllers/Api/MessagesController.cs`
-- [ ] T023 [US1] 實作 `POST /api/messages` 端點（建立留言、觸發 SignalR 廣播）
-- [ ] T024 [US1] 實作 `GET /api/messages` 端點（取得公開留言列表）
-- [ ] T025 [US1] 實作 `GET /api/messages/{id}` 端點（取得單則留言）
-- [ ] T026 [US1] 更新 `NoticeBoard/Views/Home/Index.cshtml` 加入留言表單 UI
-- [ ] T027 [US1] 更新 `NoticeBoard/wwwroot/js/site.js` 加入留言送出邏輯與 SignalR 連接
-- [ ] T028 [US1] 更新 `NoticeBoard/wwwroot/css/site.css` 加入留言板樣式
+- [X] T022 [US1] 建立 `MessagesController` 在 `NoticeBoard/Controllers/Api/MessagesController.cs`
+- [X] T023 [US1] 實作 `POST /api/messages` 端點（建立留言、觸發 SignalR 廣播）
+- [X] T024 [US1] 實作 `GET /api/messages` 端點（取得公開留言列表）
+- [X] T025 [US1] 實作 `GET /api/messages/{id}` 端點（取得單則留言）
+- [X] T026 [US1] 更新 `NoticeBoard/Views/Home/Index.cshtml` 加入留言表單 UI
+- [X] T027 [US1] 更新 `NoticeBoard/wwwroot/js/site.js` 加入留言送出邏輯與 SignalR 連接
+- [X] T028 [US1] 更新 `NoticeBoard/wwwroot/css/site.css` 加入留言板樣式
 
 **Checkpoint**: 發表留言功能完整可用，可獨立測試
 
@@ -107,6 +107,7 @@
 ## Phase 4: User Story 2 - 查看留言並即時更新（Priority: P2）
 
 **Goal**: 訪客可看到最新留言（最新在上）與按讚數，系統自動更新顯示其他使用者新增的留言或變更
+
 
 **Independent Test**: 使用兩個瀏覽器視窗，於一處發表留言，另一端應在 2 秒內顯示更新
 
