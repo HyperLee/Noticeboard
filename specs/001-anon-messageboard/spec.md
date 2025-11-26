@@ -118,12 +118,15 @@
  - **FR-009**: 系統 MUST 處理 XSS 與輸入過濾（在伺服器或前端 escape HTML），並具備黑名單詞彙過濾（可為簡易關鍵字列表）。
  - **FR-010**: 系統 MUST 能夠容納至少 200 名同時使用者的即時交互（品質目標）。
  - **FR-011**: 系統 MUST 紀錄留言狀態（公開 / 隱藏 / 刪除）並在後台可篩選或查詢。
+ - **FR-012**: 系統 MUST NOT 支援多房間（no Room ID）。系統僅支援單一全域房間，API 不應接受或忽略 `roomId` 參數；多房間需求屬未來擴充，須另行規劃。
 
 **Acceptance Criteria for storage & privacy & security**:
 
 - FR-007 Acceptance: 在環境中發表 10 則留言後，重新啟動伺服器，留言仍可被載入且內容正確（相同 id 與 created_at）。
 - FR-008 Acceptance: 送出留言後，檢查 JSON 儲存檔，確定沒有包含 IP、email 或裝置唯一識別等個人資訊欄位。
 - FR-009 Acceptance: 向系統送出包含 `<script>` 的內容時，前端／後端應顯示 escape 過後文字或移除危險標籤，且不會執行該腳本。
+
+- FR-012 Acceptance: 若 API 請求包含 `roomId` 參數，伺服器應回傳 400 Bad Request，並顯示訊息 "multi-room not supported"；系統僅在全域房間儲存留言與統計。
 
 *Example of marking unclear requirements:*
 
@@ -168,4 +171,17 @@
 - Admin 驗證採用單一密碼（admin/admin999）供練習或 demo 使用，不做生產級安全機制
 - 即時同步首選 WebSocket，若環境不支援則以短輪詢做為 fallback
 - Client 端使用 localStorage 或 cookie 控制按讚限制，伺服端可以補強檢查但不依賴其為唯一保護
+- 系統僅支援單一全域房間（no Room ID）；API 若收到 `roomId` 參數應回傳錯誤（400 Bad Request）或明確忽略，避免產生多房間期待。
+
+## Clarifications
+
+### Session 2025-11-26
+
+- Q: Should the system support multiple rooms (Room ID) or always be single-room? → A: **Single room only**. The system must reject or ignore any roomId parameter and operate on a single global room; multi-room support is out of scope for v1.
+
+### Integration changes made from clarifications
+
+- Removed any implicit support for roomId in entities or acceptance criteria; `Message` does not include a `roomId` field.
+- Added `FR-012` explicitly forbidding multi-room support and clarified Assumptions to prevent future ambiguity.
+
 
