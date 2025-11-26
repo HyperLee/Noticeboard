@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "dotnet build \"${workspaceFolder}/NoticeBoard/NoticeBoard.csproj\" --configuration Debug",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$msCompile"]
+    }
+    ,
+    {
+      "label": "run-no-profile",
+      "type": "shell",
+      "command": "dotnet run --no-launch-profile --project \"${workspaceFolder}/NoticeBoard/NoticeBoard.csproj\" --configuration Debug",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "isBackground": false
+    }
+  ]
+}
