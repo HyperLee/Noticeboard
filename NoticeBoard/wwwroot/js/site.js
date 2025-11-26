@@ -48,12 +48,22 @@ const NoticeBoard = (function () {
     async function initSignalR() {
         if (typeof signalR === 'undefined') {
             console.warn('SignalR 函式庫尚未載入');
+            showToast('即時更新功能不可用', 'warning');
             return;
         }
 
         connection = new signalR.HubConnectionBuilder()
             .withUrl('/messageHub')
-            .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+            .withAutomaticReconnect({
+                nextRetryDelayInMilliseconds: retryContext => {
+                    // 漸進式重試延遲：0, 2s, 5s, 10s, 30s, 然後每 60s 重試一次
+                    const delays = [0, 2000, 5000, 10000, 30000];
+                    if (retryContext.previousRetryCount < delays.length) {
+                        return delays[retryContext.previousRetryCount];
+                    }
+                    return 60000; // 超過後每分鐘重試一次
+                }
+            })
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
@@ -64,27 +74,63 @@ const NoticeBoard = (function () {
         connection.on('LikeCountUpdated', handleLikeCountUpdated);
 
         // 連線狀態變更
-        connection.onreconnecting(() => {
+        connection.onreconnecting((error) => {
+            console.warn('SignalR 重新連線中...', error);
             updateConnectionStatus('reconnecting');
+            showToast('連線中斷，正在重新連線...', 'warning');
         });
 
-        connection.onreconnected(() => {
+        connection.onreconnected((connectionId) => {
+            console.log('SignalR 已重新連線:', connectionId);
             updateConnectionStatus('connected');
-            loadMessages(); // 重連後重新載入留言
+            showToast('已重新連線', 'success');
+            loadMessages(); // 重連後重新載入留言以同步最新狀態
         });
 
-        connection.onclose(() => {
+        connection.onclose((error) => {
+            console.error('SignalR 連線已關閉:', error);
             updateConnectionStatus('disconnected');
+            showToast('連線已中斷，點擊重新連線', 'error', true);
         });
 
         // 啟動連線
+        await startConnection();
+    }
+
+    /**
+     * 啟動 SignalR 連線
+     * @returns {Promise<boolean>} 連線是否成功
+     */
+    async function startConnection() {
+        if (!connection) return false;
+
         try {
             await connection.start();
             updateConnectionStatus('connected');
             console.log('SignalR 連線成功');
+            return true;
         } catch (err) {
             console.error('SignalR 連線失敗:', err);
             updateConnectionStatus('disconnected');
+            return false;
+        }
+    }
+
+    /**
+     * 手動重新連線
+     */
+    async function reconnect() {
+        if (!connection) {
+            await initSignalR();
+            return;
+        }
+
+        if (connection.state === signalR.HubConnectionState.Disconnected) {
+            showToast('正在連線...', 'info');
+            const success = await startConnection();
+            if (success) {
+                await loadMessages();
+            }
         }
     }
 
@@ -96,14 +142,22 @@ const NoticeBoard = (function () {
         if (!elements.connectionIndicator) return;
 
         const statusConfig = {
-            connected: { class: 'bg-success', text: '已連線' },
-            reconnecting: { class: 'bg-warning', text: '重新連線中...' },
-            disconnected: { class: 'bg-danger', text: '已斷線' }
+            connected: { class: 'bg-success', text: '已連線', clickable: false },
+            reconnecting: { class: 'bg-warning', text: '重新連線中...', clickable: false },
+            disconnected: { class: 'bg-danger', text: '已斷線 - 點擊重連', clickable: true }
         };
 
         const config = statusConfig[status] || statusConfig.disconnected;
         elements.connectionIndicator.className = `badge ${config.class}`;
         elements.connectionIndicator.innerHTML = `<span class="status-dot"></span> ${config.text}`;
+        elements.connectionIndicator.style.cursor = config.clickable ? 'pointer' : 'default';
+        
+        // 斷線時允許點擊重連
+        if (config.clickable) {
+            elements.connectionIndicator.onclick = reconnect;
+        } else {
+            elements.connectionIndicator.onclick = null;
+        }
     }
 
     /**
@@ -114,6 +168,9 @@ const NoticeBoard = (function () {
         console.log('收到新留言:', message);
         prependMessage(message);
         updateEmptyState();
+        
+        // 顯示視覺提示
+        showToast('有新留言！', 'info', false, 2000);
     }
 
     /**
@@ -124,7 +181,14 @@ const NoticeBoard = (function () {
         console.log('留言已更新:', message);
         const card = document.querySelector(`[data-message-id="${message.id}"]`);
         if (card) {
+            // 加入更新動畫
+            card.classList.add('highlight-update');
             updateMessageCard(card, message);
+            
+            // 移除動畫類別
+            setTimeout(() => {
+                card.classList.remove('highlight-update');
+            }, 1000);
         }
     }
 
@@ -154,8 +218,19 @@ const NoticeBoard = (function () {
         const card = document.querySelector(`[data-message-id="${messageId}"]`);
         if (card) {
             const likeCountEl = card.querySelector('.like-count');
+            const likeBtn = card.querySelector('.like-btn');
+            
             if (likeCountEl) {
+                const oldCount = parseInt(likeCountEl.textContent, 10) || 0;
                 likeCountEl.textContent = likeCount;
+                
+                // 按讚數增加時加入彈跳動畫
+                if (likeCount > oldCount && likeBtn) {
+                    likeBtn.classList.add('like-bounce');
+                    setTimeout(() => {
+                        likeBtn.classList.remove('like-bounce');
+                    }, 300);
+                }
             }
         }
     }
@@ -307,12 +382,84 @@ const NoticeBoard = (function () {
     }
 
     /**
+     * 顯示 Toast 通知訊息
+     * @param {string} message - 訊息內容
+     * @param {string} type - 類型 (success/error/warning/info)
+     * @param {boolean} persistent - 是否持續顯示直到點擊
+     * @param {number} duration - 自動消失時間 (毫秒)
+     */
+    function showToast(message, type = 'info', persistent = false, duration = 3000) {
+        // 建立或取得 Toast 容器
+        let container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '1100';
+            document.body.appendChild(container);
+        }
+
+        const typeConfig = {
+            success: { class: 'bg-success text-white', icon: '✓' },
+            error: { class: 'bg-danger text-white', icon: '✗' },
+            warning: { class: 'bg-warning text-dark', icon: '⚠' },
+            info: { class: 'bg-info text-dark', icon: 'ℹ' }
+        };
+
+        const config = typeConfig[type] || typeConfig.info;
+
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center ${config.class} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <span class="me-2">${config.icon}</span>
+                    ${escapeHtml(message)}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="關閉"></button>
+            </div>
+        `;
+
+        container.appendChild(toast);
+
+        // 使用 Bootstrap Toast 或自訂動畫
+        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: !persistent,
+                delay: duration
+            });
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        } else {
+            // 備用動畫方案
+            toast.classList.add('show');
+            
+            if (!persistent) {
+                setTimeout(() => {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+            
+            toast.querySelector('.btn-close')?.addEventListener('click', () => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            });
+        }
+    }
+
+    /**
      * 顯示錯誤訊息
      * @param {string} message - 錯誤訊息
      */
     function showError(message) {
-        // 簡單的 alert，後續可改為 toast
-        alert(message);
+        showToast(message, 'error', false, 5000);
     }
 
     /**
@@ -504,29 +651,65 @@ const NoticeBoard = (function () {
      * @param {HTMLElement} button - 按鈕元素
      */
     async function handleLikeClick(messageId, button) {
-        // 按讚功能會在 Phase 5 實作
-        // 目前只更新本地 UI 狀態
+        // 防止重複點擊
+        if (button.disabled) return;
+        button.disabled = true;
+
         const likeIcon = button.querySelector('.like-icon');
         const likeCount = button.querySelector('.like-count');
         
         const wasLiked = isLiked(messageId);
         const newLiked = !wasLiked;
+        const oldCount = parseInt(likeCount?.textContent, 10) || 0;
         
-        // 更新本地狀態
+        // 樂觀更新 UI
         setLiked(messageId, newLiked);
-        
-        // 更新 UI
         if (likeIcon) likeIcon.textContent = newLiked ? '❤️' : '🤍';
         button.classList.toggle('liked', newLiked);
-        
-        // 樂觀更新計數
         if (likeCount) {
-            const currentCount = parseInt(likeCount.textContent, 10) || 0;
-            likeCount.textContent = newLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
+            likeCount.textContent = newLiked ? oldCount + 1 : Math.max(0, oldCount - 1);
         }
         
-        // TODO: Phase 5 會實作實際的 API 呼叫
-        console.log(`按讚狀態切換: ${messageId} -> ${newLiked}`);
+        try {
+            // 呼叫 API
+            const response = await fetch('/api/likes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin', // 確保 Cookie 被傳送
+                body: JSON.stringify({
+                    messageId: messageId
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            // 根據伺服器回應更新狀態（以伺服器為準）
+            setLiked(messageId, result.liked);
+            if (likeIcon) likeIcon.textContent = result.liked ? '❤️' : '🤍';
+            button.classList.toggle('liked', result.liked);
+            if (likeCount) likeCount.textContent = result.likeCount;
+            
+            console.log(`按讚狀態更新: ${messageId} -> ${result.liked}, count: ${result.likeCount}`);
+
+        } catch (err) {
+            console.error('按讚操作失敗:', err);
+            
+            // 回滾 UI 狀態
+            setLiked(messageId, wasLiked);
+            if (likeIcon) likeIcon.textContent = wasLiked ? '❤️' : '🤍';
+            button.classList.toggle('liked', wasLiked);
+            if (likeCount) likeCount.textContent = oldCount;
+            
+            showError('按讚操作失敗，請稍後再試');
+        } finally {
+            button.disabled = false;
+        }
     }
 
     /**
@@ -546,7 +729,8 @@ const NoticeBoard = (function () {
     // 公開 API
     return {
         init: init,
-        loadMessages: loadMessages
+        loadMessages: loadMessages,
+        reconnect: reconnect
     };
 })();
 

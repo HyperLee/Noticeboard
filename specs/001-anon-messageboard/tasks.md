@@ -113,11 +113,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T029 [US2] 加強 `NoticeBoard/Hubs/MessageHub.cs` 實作 `ReceiveMessage` 廣播
-- [ ] T030 [US2] 加強 `NoticeBoard/Hubs/MessageHub.cs` 實作 `MessageUpdated` 廣播
-- [ ] T031 [US2] 加強 `NoticeBoard/Hubs/MessageHub.cs` 實作 `LikeCountUpdated` 廣播
-- [ ] T032 [US2] 更新 `NoticeBoard/wwwroot/js/site.js` 處理 SignalR 事件並即時更新 DOM
-- [ ] T033 [US2] 更新 `NoticeBoard/wwwroot/js/site.js` 加入斷線重連與錯誤處理邏輯
+- [X] T029 [US2] 加強 `NoticeBoard/Hubs/MessageHub.cs` 實作 `ReceiveMessage` 廣播
+- [X] T030 [US2] 加強 `NoticeBoard/Hubs/MessageHub.cs` 實作 `MessageUpdated` 廣播
+- [X] T031 [US2] 加強 `NoticeBoard/Hubs/MessageHub.cs` 實作 `LikeCountUpdated` 廣播
+- [X] T032 [US2] 更新 `NoticeBoard/wwwroot/js/site.js` 處理 SignalR 事件並即時更新 DOM
+- [X] T033 [US2] 更新 `NoticeBoard/wwwroot/js/site.js` 加入斷線重連與錯誤處理邏輯
 
 **Checkpoint**: 即時更新功能完整可用，可獨立測試
 
@@ -131,14 +131,14 @@
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] 建立 `LikeResponse` 在 `NoticeBoard/Models/Responses/LikeResponse.cs`
-- [ ] T035 [US3] 建立 `LikeStatusResponse` 在 `NoticeBoard/Models/Responses/LikeStatusResponse.cs`
-- [ ] T036 [US3] 建立 `LikesController` 在 `NoticeBoard/Controllers/Api/LikesController.cs`
-- [ ] T037 [US3] 實作 `POST /api/likes` 端點（按讚/取消按讚 toggle）
-- [ ] T038 [US3] 實作 `GET /api/likes/{messageId}` 端點（檢查按讚狀態）
-- [ ] T039 [US3] 實作匿名 Token Cookie 產生與驗證邏輯在 `LikesController`
-- [ ] T040 [US3] 更新 `NoticeBoard/wwwroot/js/site.js` 加入按讚 UI 互動與 localStorage 標記
-- [ ] T041 [US3] 加強 `LikeService` 實作按讚記錄儲存與重複檢查
+- [X] T034 [US3] 建立 `LikeResponse` 在 `NoticeBoard/Models/Responses/LikeResponse.cs`
+- [X] T035 [US3] 建立 `LikeStatusResponse` 在 `NoticeBoard/Models/Responses/LikeStatusResponse.cs`
+- [X] T036 [US3] 建立 `LikesController` 在 `NoticeBoard/Controllers/Api/LikesController.cs`
+- [X] T037 [US3] 實作 `POST /api/likes` 端點（按讚/取消按讚 toggle）
+- [X] T038 [US3] 實作 `GET /api/likes/{messageId}` 端點（檢查按讚狀態）
+- [X] T039 [US3] 實作匿名 Token Cookie 產生與驗證邏輯在 `LikesController`
+- [X] T040 [US3] 更新 `NoticeBoard/wwwroot/js/site.js` 加入按讚 UI 互動與 localStorage 標記
+- [X] T041 [US3] 加強 `LikeService` 實作按讚記錄儲存與重複檢查
 
 **Checkpoint**: 按讚功能完整可用，可獨立測試
 

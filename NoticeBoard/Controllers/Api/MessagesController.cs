@@ -98,8 +98,8 @@ public class MessagesController : ControllerBase
         {
             var message = await _messageService.CreateMessageAsync(content, request.Nickname?.Trim());
             
-            // 透過 SignalR 廣播新留言給所有客戶端
-            await _hubContext.Clients.All.ReceiveMessage(message);
+            // 透過 SignalR 廣播新留言給全域群組的所有客戶端
+            await _hubContext.Clients.Group("global").ReceiveMessage(message);
             _logger.LogInformation("新留言已建立並廣播: {MessageId}", message.Id);
 
             return CreatedAtAction(
