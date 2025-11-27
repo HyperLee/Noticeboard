@@ -14,4 +14,9 @@ public class LoginResponse
     /// 回應訊息
     /// </summary>
     public string? Message { get; set; }
+
+    /// <summary>
+    /// 登入成功後的重新導向 URL
+    /// </summary>
+    public string? RedirectUrl { get; set; }
 }

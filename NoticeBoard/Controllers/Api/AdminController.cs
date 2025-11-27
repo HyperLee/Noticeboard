@@ -43,16 +43,38 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
-    /// 管理者登入
+    /// 管理者登入 (JSON 格式)
     /// </summary>
     /// <param name="request">登入請求</param>
     /// <returns>登入結果</returns>
     /// <response code="200">登入成功</response>
     /// <response code="401">認證失敗</response>
     [HttpPost("login")]
+    [Consumes("application/json")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public IActionResult Login([FromBody] AdminLoginRequest request)
+    {
+        return ProcessLogin(request, redirectOnSuccess: false);
+    }
+
+    /// <summary>
+    /// 管理者登入 (表單格式，成功後重新導向)
+    /// </summary>
+    /// <param name="request">登入請求</param>
+    /// <returns>登入結果或重新導向</returns>
+    /// <response code="302">登入成功，重新導向至後台</response>
+    /// <response code="401">認證失敗</response>
+    [HttpPost("login")]
+    [Consumes("application/x-www-form-urlencoded")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    public IActionResult LoginForm([FromForm] AdminLoginRequest request)
+    {
+        return ProcessLogin(request, redirectOnSuccess: true);
+    }
+
+    private IActionResult ProcessLogin(AdminLoginRequest request, bool redirectOnSuccess)
     {
         var adminUsername = _configuration["Admin:Username"] ?? "admin";
         var adminPassword = _configuration["Admin:Password"] ?? "admin999";
@@ -62,14 +84,28 @@ public class AdminController : ControllerBase
             HttpContext.Session.SetString(AdminSessionKey, "true");
             _logger.LogInformation("管理者登入成功");
 
+            // 表單提交時自動重新導向至後台
+            if (redirectOnSuccess)
+            {
+                return Redirect("/Admin");
+            }
+
             return Ok(new LoginResponse
             {
                 Success = true,
-                Message = "登入成功"
+                Message = "登入成功",
+                RedirectUrl = "/Admin"
             });
         }
 
         _logger.LogWarning("管理者登入失敗：使用者名稱或密碼錯誤");
+        
+        // 表單提交失敗時重新導向回登入頁面
+        if (redirectOnSuccess)
+        {
+            return Redirect("/Admin/Login?error=invalid");
+        }
+        
         return Unauthorized(new ProblemDetails
         {
             Type = "https://tools.ietf.org/html/rfc7807",
