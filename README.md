@@ -153,11 +153,17 @@ Noticeboard/
 
 | 方法 | 端點 | 說明 |
 |------|------|------|
-| `POST` | `/api/admin/login` | 管理者登入 |
+| `POST` | `/api/admin/login` | 管理者登入（支援 JSON 與表單格式） |
 | `POST` | `/api/admin/logout` | 管理者登出 |
 | `PUT` | `/api/admin/messages/{id}/hide` | 隱藏留言 |
 | `PUT` | `/api/admin/messages/{id}/restore` | 恢復留言 |
 | `DELETE` | `/api/admin/messages/{id}` | 刪除留言 |
+
+> [!NOTE]
+> **登入 API 支援兩種格式：**
+>
+> - `application/json`：回傳 JSON 含 `redirectUrl` 欄位
+> - `application/x-www-form-urlencoded`：成功後自動重新導向至 `/Admin`
 
 > [!NOTE]
 > 完整 API 規格請參閱 [API Spec](specs/001-anon-messageboard/contracts/api-spec.yaml)
